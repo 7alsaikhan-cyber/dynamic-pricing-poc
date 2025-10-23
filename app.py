@@ -6,13 +6,20 @@ import pytz
 # --- Streamlit Page Setup ---
 st.set_page_config(page_title="Dynamic Pricing Engine", layout="centered")
 
+# --- Visual Refresh Indicator ---
+st.markdown("""
+<div style='text-align:center; color:#6c63ff;'>
+    <h3>🔄 Refreshing data... please wait</h3>
+</div>
+""", unsafe_allow_html=True)
+
 # --- Auto Refresh (every 60 seconds) ---
 time.sleep(60)
 st.experimental_rerun()
 
 # --- Header ---
 st.markdown("""
-<div style='text-align: center;'>
+<div style='text-align:center'>
     <h2>Channels by stc – AI Dynamic Pricing Engine</h2>
     <h4>Hackathon Proof of Concept (PoC)</h4>
 </div>
@@ -21,22 +28,22 @@ st.markdown("""
 # --- User Inputs ---
 our_price = st.number_input("💰 Our Current Price (SAR)", value=519.0, step=1.0)
 competitor_price = st.number_input("🏪 Competitor Price (SAR)", value=649.0, step=1.0)
-discount_margin = 0.02  # 2% cheaper logic
+discount_margin = 0.02  # 2% below competitor
 
 # --- Core Logic ---
 if competitor_price > our_price:
     suggested = competitor_price * (1 - discount_margin)
     action = "⬆️ Increase"
     rationale = (
-        f"Competitor is selling higher at {competitor_price:.0f} SAR. "
-        f"Raise our price to stay 2% below → {suggested:.0f} SAR."
+        f"Competitor sells higher at {competitor_price:.0f} SAR. "
+        f"Raise our price but stay 2% below → {suggested:.0f} SAR."
     )
 elif competitor_price < our_price:
     suggested = competitor_price
     action = "⬇️ Decrease"
     rationale = (
         f"Competitor is cheaper ({competitor_price:.0f} SAR). "
-        f"Lower our price to match → {suggested:.0f} SAR."
+        f"Lower price to match → {suggested:.0f} SAR."
     )
 else:
     suggested = our_price
